@@ -4,7 +4,7 @@
 #  * EKS Node Group to launch worker nodes
 #
 
-resource "aws_iam_role" "terra-node" {
+resource "aws_iam_role" "buildpack-node" {
   name = "${var.resource_prefix}-eks-node-role"
 
   assume_role_policy = <<POLICY
@@ -23,25 +23,25 @@ resource "aws_iam_role" "terra-node" {
 POLICY
 }
 
-resource "aws_iam_role_policy_attachment" "terra-node-AmazonEKSWorkerNodePolicy" {
+resource "aws_iam_role_policy_attachment" "buildpack-node-AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.terra-node.name
+  role       = aws_iam_role.buildpack-node.name
 }
 
-resource "aws_iam_role_policy_attachment" "terra-node-AmazonEKS_CNI_Policy" {
+resource "aws_iam_role_policy_attachment" "buildpack-node-AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.terra-node.name
+  role       = aws_iam_role.buildpack-node.name
 }
 
-resource "aws_iam_role_policy_attachment" "terra-node-AmazonEC2ContainerRegistryReadOnly" {
+resource "aws_iam_role_policy_attachment" "buildpack-node-AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.terra-node.name
+  role       = aws_iam_role.buildpack-node.name
 }
 
-resource "aws_eks_node_group" "terra" {
-  cluster_name    = aws_eks_cluster.terra.name
+resource "aws_eks_node_group" "buildpack" {
+  cluster_name    = aws_eks_cluster.buildpack.name
   node_group_name = "${var.resource_prefix}-${var.cluster_node_name}"
-  node_role_arn   = aws_iam_role.terra-node.arn
+  node_role_arn   = aws_iam_role.buildpack-node.arn
   subnet_ids      = [var.subnet_id1, var.subnet_id2]
   instance_types  = var.node_type
 
@@ -52,8 +52,8 @@ resource "aws_eks_node_group" "terra" {
   }
 
   depends_on = [
-    aws_iam_role_policy_attachment.terra-node-AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.terra-node-AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.terra-node-AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.buildpack-node-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.buildpack-node-AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.buildpack-node-AmazonEC2ContainerRegistryReadOnly,
   ]
 }

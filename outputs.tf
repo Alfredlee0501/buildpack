@@ -2,20 +2,20 @@
 # Outputs
 #
 
-### RDS(Mariadb)
-output "mariadb_endpoint" {
+### RDS(PostgreSQL)
+output "postgres_endpoint" {
   description = "The connection endpoint"
-  value       = module.data.mariadb_endpoint
+  value       = module.data.postgres_endpoint
 }
 
-output "mariadb_user_name" {
+output "postgres_user_name" {
   description = "The master username for the database"
-  value       = module.data.mariadb_user_name
+  value       = module.data.postgres_user_name
 }
 
-output "mariadb_user_password" {
+output "postgres_user_password" {
   description = "The master password for the database"
-  value       = module.data.mariadb_user_password
+  value       = module.data.postgres_user_password
 }
 
 

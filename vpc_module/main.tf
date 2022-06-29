@@ -10,24 +10,24 @@
 
 data "aws_availability_zones" "available" {}
 
-resource "aws_vpc" "terra" {
+resource "aws_vpc" "buildpack" {
   cidr_block = "10.0.0.0/16"
 
   tags = {
-    Name = "${var.resource_prefix}-terraform-vpc",
+    Name = "${var.resource_prefix}-buildpack-vpc",
   }
 }
 
 
 resource "aws_subnet" "public" {
   count                   = 2
-  vpc_id                  = aws_vpc.terra.id
+  vpc_id                  = aws_vpc.buildpack.id
   availability_zone       = data.aws_availability_zones.available.names[count.index]
   cidr_block              = "10.0.${count.index}.0/24"
   map_public_ip_on_launch = true
 
   tags = tomap({
-    Name                                                               = "${var.resource_prefix}-terraform-public-subnet${count.index + 1}",
+    Name                                                               = "${var.resource_prefix}-buildpack-public-subnet${count.index + 1}",
     "kubernetes.io/cluster/${var.resource_prefix}-${var.cluster_name}" = "shared",
   })
 }
@@ -35,58 +35,58 @@ resource "aws_subnet" "public" {
 
 resource "aws_subnet" "private" {
   count                   = 2
-  vpc_id                  = aws_vpc.terra.id
+  vpc_id                  = aws_vpc.buildpack.id
   availability_zone       = data.aws_availability_zones.available.names[count.index]
   cidr_block              = "10.0.1${count.index}.0/24"
   map_public_ip_on_launch = false
 
   tags = tomap({
-    Name = "${var.resource_prefix}-terraform-private-subnet${count.index + 1}",
+    Name = "${var.resource_prefix}-buildpack-private-subnet${count.index + 1}",
   })
 }
 
 
-resource "aws_internet_gateway" "terra" {
-  vpc_id = aws_vpc.terra.id
+resource "aws_internet_gateway" "buildpack" {
+  vpc_id = aws_vpc.buildpack.id
 
   tags = {
-    Name = "${var.resource_prefix}-terraform-eks-ig"
+    Name = "${var.resource_prefix}-buildpack-eks-ig"
   }
 }
 
-resource "aws_nat_gateway" "terra" {
+resource "aws_nat_gateway" "buildpack" {
   allocation_id = aws_eip.nat.id
   subnet_id     = element(aws_subnet.public.*.id, 0)
-  depends_on    = [aws_internet_gateway.terra]
+  depends_on    = [aws_internet_gateway.buildpack]
 
   tags = {
-    Name = "${var.resource_prefix}-terraform-nat-gw"
+    Name = "${var.resource_prefix}-buildpack-nat-gw"
   }
 }
 
 
 resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.terra.id
+  vpc_id = aws_vpc.buildpack.id
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.terra.id
+    gateway_id = aws_internet_gateway.buildpack.id
   }
 
   tags = {
-    Name = "${var.resource_prefix}-terraform-public-route"
+    Name = "${var.resource_prefix}-buildpack-public-route"
   }
 }
 
 
 resource "aws_route_table" "private" {
-  vpc_id = aws_vpc.terra.id
+  vpc_id = aws_vpc.buildpack.id
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.terra.id
+    nat_gateway_id = aws_nat_gateway.buildpack.id
   }
 
   tags = {
-    Name = "${var.resource_prefix}-terraform-private-route",
+    Name = "${var.resource_prefix}-buildpack-private-route",
   }
 }
 
@@ -107,10 +107,10 @@ resource "aws_route_table_association" "private" {
 
 resource "aws_eip" "nat" {
   vpc        = true
-  depends_on = [aws_internet_gateway.terra]
+  depends_on = [aws_internet_gateway.buildpack]
 
   tags = {
-    Name = "${var.resource_prefix}-terraform-NAT"
+    Name = "${var.resource_prefix}-buildpack-NAT"
   }
 }
 
@@ -118,7 +118,7 @@ resource "aws_eip" "nat" {
 resource "aws_eip" "eip1" {
   vpc  = true
   tags = {
-    Name = "${var.resource_prefix}-terraform-EIP1"
+    Name = "${var.resource_prefix}-buildpack-EIP1"
   }
 }
 
@@ -126,7 +126,7 @@ resource "aws_eip" "eip1" {
 resource "aws_eip" "eip2" {
   vpc  = true
   tags = {
-    Name = "${var.resource_prefix}-terraform EIP2"
+    Name = "${var.resource_prefix}-buildpack EIP2"
   }
 }
 

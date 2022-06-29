@@ -1,48 +1,48 @@
 #
 # Data Store
-#  * RDS (MariaDB 10.5.12)
+#  * RDS (PostgreSQL 14.1-R1)
 #  * Elasticache (Redis 6.x)
 #
 
 
-## RDS(Mariadb)  #####################################################
+## RDS(PostgreSQL)  #####################################################
 resource "random_string" "password" {
   length  = 10
   special = false
 }
 
 
-resource "aws_db_subnet_group" "terra" {
-  name        = "${var.resource_prefix}-terraform-rds-subnet-group"
-  description = "Terraform example RDS subnet group"
+resource "aws_db_subnet_group" "buildpack" {
+  name        = "${var.resource_prefix}-buildpack-rds-subnet-group"
+  description = "BuildPack RDS subnet group"
   subnet_ids  = [var.subnet_id1, var.subnet_id2]
 
   tags = {
-    Name = "aws db subnet group via terraform"
+    Name = "aws db subnet group via buildpack"
   }
 }
 
 
-resource "aws_db_instance" "terra" {
-  identifier             = "${var.resource_prefix}-keycloackdb"
+resource "aws_db_instance" "buildpack" {
+  identifier             = "${var.resource_prefix}-buildpackdb"
   allocated_storage      = 10
-  engine                 = "mariadb"
-  engine_version         = var.mariadb_version
-  instance_class         = var.mariadb_instance_class
-  db_name                = var.mariadb_name
-  username               = var.mariadb_master_user_name
+  engine                 = "postgres"
+  engine_version         = var.postgres_version
+  instance_class         = var.postgres_instance_class
+  db_name                = var.postgres_name
+  username               = var.postgres_master_user_name
   password               = random_string.password.result
   skip_final_snapshot    = true
   apply_immediately      = true
-  vpc_security_group_ids = ["${aws_security_group.terra.id}"]
-  db_subnet_group_name   = aws_db_subnet_group.terra.id
-  parameter_group_name   = aws_db_parameter_group.terra.name
+  vpc_security_group_ids = ["${aws_security_group.buildpack.id}"]
+  db_subnet_group_name   = aws_db_subnet_group.buildpack.id
+  parameter_group_name   = aws_db_parameter_group.buildpack.name
 }
 
 
-resource "aws_db_parameter_group" "terra" {
-  name   = "${var.resource_prefix}terraparameter"
-  family = "mariadb10.5"
+resource "aws_db_parameter_group" "buildpack" {
+  name   = "${var.resource_prefix}buildpackparameter"
+  family = "postgres14.1"
 
   parameter {
     name  = "max_connections"
@@ -51,14 +51,14 @@ resource "aws_db_parameter_group" "terra" {
 }
 
 
-resource "aws_security_group" "terra" {
-  name        = "${var.resource_prefix}-terraform_rds_sg"
-  description = "Terraform RDS MariaDB sg"
+resource "aws_security_group" "buildpack" {
+  name        = "${var.resource_prefix}-buildpack_rds_sg"
+  description = "BuildPack RDS PostgreSQL sg"
   vpc_id      = var.vpc_id
 
   ingress {
-    from_port   = var.mariadb_port
-    to_port     = var.mariadb_port
+    from_port   = var.postgres_port
+    to_port     = var.postgres_port
     protocol    = "tcp"
     cidr_blocks = ["10.0.0.0/16"]
   }
@@ -73,7 +73,7 @@ resource "aws_security_group" "terra" {
 
 
 ## Elasticache(redis) ##################################
-resource "aws_elasticache_cluster" "terra" {
+resource "aws_elasticache_cluster" "buildpack" {
   cluster_id           = "${var.resource_prefix}-redis-cluster"
   engine               = "redis"
   node_type            = var.redis_node_type
@@ -83,11 +83,11 @@ resource "aws_elasticache_cluster" "terra" {
   port                 = 6379
   apply_immediately    = true
   security_group_ids   = ["${aws_security_group.redis_sg.id}"]
-  subnet_group_name    = aws_elasticache_subnet_group.terra.id
+  subnet_group_name    = aws_elasticache_subnet_group.buildpack.id
 }
 
 
-resource "aws_elasticache_subnet_group" "terra" {
+resource "aws_elasticache_subnet_group" "buildpack" {
   name       = "${var.resource_prefix}-redis-subnet-group"
   subnet_ids = [var.subnet_id1, var.subnet_id2]
 }

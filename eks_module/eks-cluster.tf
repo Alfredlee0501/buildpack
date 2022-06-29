@@ -5,7 +5,7 @@
 #  * EKS Cluster
 #
 
-resource "aws_iam_role" "terra-cluster" {
+resource "aws_iam_role" "buildpack-cluster" {
   name = "${var.resource_prefix}-eks-cluster-role"
 
   assume_role_policy = <<POLICY
@@ -24,18 +24,18 @@ resource "aws_iam_role" "terra-cluster" {
 POLICY
 }
 
-resource "aws_iam_role_policy_attachment" "terra-cluster-AmazonEKSClusterPolicy" {
+resource "aws_iam_role_policy_attachment" "buildpack-cluster-AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.terra-cluster.name
+  role       = aws_iam_role.buildpack-cluster.name
 }
 
-resource "aws_iam_role_policy_attachment" "terra-cluster-AmazonEKSVPCResourceController" {
+resource "aws_iam_role_policy_attachment" "buildpack-cluster-AmazonEKSVPCResourceController" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  role       = aws_iam_role.terra-cluster.name
+  role       = aws_iam_role.buildpack-cluster.name
 }
 
-resource "aws_security_group" "terra-cluster" {
-  name        = "${var.resource_prefix}-terraform-eks-cluster-sg"
+resource "aws_security_group" "buildpack-cluster" {
+  name        = "${var.resource_prefix}-buildpack-eks-cluster-sg"
   description = "Cluster communication sg with worker nodes"
   vpc_id      = var.vpc_id
 
@@ -47,33 +47,33 @@ resource "aws_security_group" "terra-cluster" {
   }
 
   tags = {
-    Name = "${var.resource_prefix}-terraform-eks-sg"
+    Name = "${var.resource_prefix}-buildpack-eks-sg"
   }
 }
 
-resource "aws_security_group_rule" "terra-cluster-ingress-workstation-https" {
+resource "aws_security_group_rule" "buildpack-cluster-ingress-workstation-https" {
   cidr_blocks       = ["10.0.0.0/16"]
   description       = "Allow workstation to communicate with the cluster API Server"
   from_port         = 0
   protocol          = "tcp"
-  security_group_id = aws_security_group.terra-cluster.id
+  security_group_id = aws_security_group.buildpack-cluster.id
   to_port           = 0
   type              = "ingress"
 }
 
-resource "aws_eks_cluster" "terra" {
+resource "aws_eks_cluster" "buildpack" {
   name     = "${var.resource_prefix}-${var.cluster_name}"
   version  = 1.22
-  role_arn = aws_iam_role.terra-cluster.arn
+  role_arn = aws_iam_role.buildpack-cluster.arn
 
   vpc_config {
-    security_group_ids = [aws_security_group.terra-cluster.id]
+    security_group_ids = [aws_security_group.buildpack-cluster.id]
     subnet_ids         = [var.subnet_id1, var.subnet_id2]
   }
 
   depends_on = [
-    aws_iam_role_policy_attachment.terra-cluster-AmazonEKSClusterPolicy,
-    aws_iam_role_policy_attachment.terra-cluster-AmazonEKSVPCResourceController,
+    aws_iam_role_policy_attachment.buildpack-cluster-AmazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.buildpack-cluster-AmazonEKSVPCResourceController,
   ]
 }
 

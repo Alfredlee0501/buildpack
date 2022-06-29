@@ -7,7 +7,7 @@ output "public_ip" {
 
 ## VPC_ID
 output "vpc_id" {
-  value = aws_vpc.terra.id
+  value = aws_vpc.buildpack.id
 }
 
 ## Private_subnet_id
