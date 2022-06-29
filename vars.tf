@@ -1,4 +1,4 @@
-## Define Common variables #################################
+### Define Common variables #################################
 
 variable "aws_region" {
   default     = null 
@@ -53,37 +53,37 @@ variable "node_min_size" {
 
 
 ## Define RDS variables ###################################
-variable "mariadb_version" {
-  default     = "10.5.12"
+variable "postgres_version" {
+  default     = "14.1"
   type        = string
-  description = "Mariadb engine verion"
+  description = "PostgreSQL engine verion"
 }
 
-variable "mariadb_storage" {
+variable "postgres_storage" {
   default     = 10
   type        = number
-  description = "Mariadb Allocated storage(GB)"
+  description = "PostgreSQL Allocated storage(GB)"
 }
 
-variable "mariadb_port" {
-  default     = 3306
+variable "postgres_port" {
+  default     = 5432
   type        = number
-  description = "Mariadb port"
+  description = "PostgreSQL port"
 }
 
-variable "mariadb_name" {
+variable "postgres_name" {
   default     = "KeycloakDb"
   type        = string
-  description = "Mariadb name for servick application"
+  description = "PostgreSQL name for servick application"
 }
 
-variable "mariadb_instance_class" {
+variable "postgres_instance_class" {
   default     = "db.t3.medium"
   type        = string
-  description = "Mariadb instance size"
+  description = "PostgreSQL instance size"
 }
 
-variable "mariadb_master_user_name" {
+variable "postgres_master_user_name" {
   default     = "admin"
   type        = string
   description = "Maiadb master user name"

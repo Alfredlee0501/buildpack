@@ -11,7 +11,7 @@ metadata:
   namespace: kube-system
 data:
   mapRoles:
-    - rolearn: ${aws_iam_role.terra-node.arn}
+    - rolearn: ${aws_iam_role.buildpack-node.arn}
       username: system:node:{{EC2PrivateDNSName}}
       groups:
         - system:bootstrappers
@@ -25,8 +25,8 @@ CONFIGMAPAWSAUTH
 apiVersion: v1
 clusters:
 - cluster:
-    certificate-authority-data: ${aws_eks_cluster.terra.certificate_authority[0].data}
-    server: ${aws_eks_cluster.terra.endpoint}
+    certificate-authority-data: ${aws_eks_cluster.buildpack.certificate_authority[0].data}
+    server: ${aws_eks_cluster.buildpack.endpoint}
   name: emarket 
 
 => 2. context config.

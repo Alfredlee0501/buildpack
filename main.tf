@@ -28,12 +28,12 @@ module "data" {
   source          = "./data_module"
   resource_prefix = var.resource_prefix
 
-  mariadb_version          = var.mariadb_version
-  mariadb_storage          = var.mariadb_storage
-  mariadb_port             = var.mariadb_port
-  mariadb_name             = var.mariadb_name
-  mariadb_instance_class   = var.mariadb_instance_class
-  mariadb_master_user_name = var.mariadb_master_user_name
+  postgres_version          = var.postgres_version
+  postgres_storage          = var.postgres_storage
+  postgres_port             = var.postgres_port
+  postgres_name             = var.postgres_name
+  postgres_instance_class   = var.postgres_instance_class
+  postgres_master_user_name = var.postgres_master_user_name
   redis_port               = var.redis_port
   redis_node_type          = var.redis_node_type
 
