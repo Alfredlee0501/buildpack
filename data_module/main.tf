@@ -43,11 +43,6 @@ resource "aws_db_instance" "buildpack" {
 resource "aws_db_parameter_group" "buildpack" {
   name   = "${var.resource_prefix}buildpackparameter"
   family = "postgres14"
-
-  parameter {
-    name  = "max_connections"
-    value = "1000"
-  }
 }
 
 
