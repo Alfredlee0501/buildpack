@@ -27,18 +27,18 @@ clusters:
 - cluster:
     certificate-authority-data: ${aws_eks_cluster.buildpack.certificate_authority[0].data}
     server: ${aws_eks_cluster.buildpack.endpoint}
-  name: emarket 
+  name: buidpack 
 
 => 2. context config.
 contexts:
 - context:
-    cluster: emarket
-    user: emarket
-  name: emarket
+    cluster: buildpack
+    user: buildpack
+  name: buildpack
 
 => 3. users config.
 users:
-- name: emarket
+- name: buildpack
   user:
     exec:
       apiVersion: client.authentication.k8s.io/v1alpha1
