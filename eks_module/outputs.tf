@@ -27,18 +27,18 @@ clusters:
 - cluster:
     certificate-authority-data: ${aws_eks_cluster.buildpack.certificate_authority[0].data}
     server: ${aws_eks_cluster.buildpack.endpoint}
-  name: buidpack 
+  name: nexprime 
 
 => 2. context config.
 contexts:
 - context:
-    cluster: buildpack
-    user: buildpack
-  name: buildpack
+    cluster: nexprime
+    user: nexprime
+  name: nexprme
 
 => 3. users config.
 users:
-- name: buildpack
+- name: nexprime
   user:
     exec:
       apiVersion: client.authentication.k8s.io/v1alpha1
