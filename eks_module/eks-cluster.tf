@@ -5,7 +5,7 @@
 #  * EKS Cluster
 #
 
-resource "aws_iam_role" "buildpack-cluster" {
+resource "aws_iam_role" "nexprime-cluster" {
   name = "${var.resource_prefix}-eks-cluster-role"
 
   assume_role_policy = <<POLICY
@@ -24,17 +24,17 @@ resource "aws_iam_role" "buildpack-cluster" {
 POLICY
 }
 
-resource "aws_iam_role_policy_attachment" "buildpack-cluster-AmazonEKSClusterPolicy" {
+resource "aws_iam_role_policy_attachment" "nexprime-cluster-AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.buildpack-cluster.name
+  role       = aws_iam_role.nexprime-cluster.name
 }
 
-resource "aws_iam_role_policy_attachment" "buildpack-cluster-AmazonEKSVPCResourceController" {
+resource "aws_iam_role_policy_attachment" "nexprime-cluster-AmazonEKSVPCResourceController" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
-  role       = aws_iam_role.buildpack-cluster.name
+  role       = aws_iam_role.nexprime-cluster.name
 }
 
-resource "aws_security_group" "buildpack-cluster" {
+resource "aws_security_group" "nexprime-cluster" {
   name        = "${var.resource_prefix}-buildpack-eks-cluster-sg"
   description = "Cluster communication sg with worker nodes"
   vpc_id      = var.vpc_id
@@ -51,29 +51,29 @@ resource "aws_security_group" "buildpack-cluster" {
   }
 }
 
-resource "aws_security_group_rule" "buildpack-cluster-ingress-workstation-https" {
+resource "aws_security_group_rule" "nexprime-cluster-ingress-workstation-https" {
   cidr_blocks       = ["10.0.0.0/16"]
   description       = "Allow workstation to communicate with the cluster API Server"
   from_port         = 0
   protocol          = "tcp"
-  security_group_id = aws_security_group.buildpack-cluster.id
+  security_group_id = aws_security_group.nexprime-cluster.id
   to_port           = 0
   type              = "ingress"
 }
 
-resource "aws_eks_cluster" "buildpack" {
+resource "aws_eks_cluster" "nexprime" {
   name     = "${var.resource_prefix}-${var.cluster_name}"
   version  = 1.22
-  role_arn = aws_iam_role.buildpack-cluster.arn
+  role_arn = aws_iam_role.nexprime-cluster.arn
 
   vpc_config {
-    security_group_ids = [aws_security_group.buildpack-cluster.id]
+    security_group_ids = [aws_security_group.nexprime-cluster.id]
     subnet_ids         = [var.subnet_id1, var.subnet_id2]
   }
 
   depends_on = [
-    aws_iam_role_policy_attachment.buildpack-cluster-AmazonEKSClusterPolicy,
-    aws_iam_role_policy_attachment.buildpack-cluster-AmazonEKSVPCResourceController,
+    aws_iam_role_policy_attachment.nexprime-cluster-AmazonEKSClusterPolicy,
+    aws_iam_role_policy_attachment.nexprime-cluster-AmazonEKSVPCResourceController,
   ]
 }
 

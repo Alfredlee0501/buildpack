@@ -1,4 +1,4 @@
-### Define Common variables #################################
+## Define Common variables #################################
 
 variable "aws_region" {
   default     = null 
@@ -72,7 +72,7 @@ variable "postgres_port" {
 }
 
 variable "postgres_name" {
-  default     = "BuildpackDb"
+  default     = "mobilescmdb"
   type        = string
   description = "PostgreSQL name for servick application"
 }
@@ -84,7 +84,7 @@ variable "postgres_instance_class" {
 }
 
 variable "postgres_master_user_name" {
-  default     = "postgresqladmin"
+  default     = "ipostgresqladmin"
   type        = string
   description = "PostgreSQL master user name"
 }

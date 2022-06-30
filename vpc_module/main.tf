@@ -10,7 +10,7 @@
 
 data "aws_availability_zones" "available" {}
 
-resource "aws_vpc" "buildpack" {
+resource "aws_vpc" "nexprime" {
   cidr_block = "10.0.0.0/16"
 
   tags = {
@@ -21,7 +21,7 @@ resource "aws_vpc" "buildpack" {
 
 resource "aws_subnet" "public" {
   count                   = 2
-  vpc_id                  = aws_vpc.buildpack.id
+  vpc_id                  = aws_vpc.nexprime.id
   availability_zone       = data.aws_availability_zones.available.names[count.index]
   cidr_block              = "10.0.${count.index}.0/24"
   map_public_ip_on_launch = true
@@ -35,7 +35,7 @@ resource "aws_subnet" "public" {
 
 resource "aws_subnet" "private" {
   count                   = 2
-  vpc_id                  = aws_vpc.buildpack.id
+  vpc_id                  = aws_vpc.nexprime.id
   availability_zone       = data.aws_availability_zones.available.names[count.index]
   cidr_block              = "10.0.1${count.index}.0/24"
   map_public_ip_on_launch = false
@@ -46,18 +46,18 @@ resource "aws_subnet" "private" {
 }
 
 
-resource "aws_internet_gateway" "buildpack" {
-  vpc_id = aws_vpc.buildpack.id
+resource "aws_internet_gateway" "nexprime" {
+  vpc_id = aws_vpc.nexprime.id
 
   tags = {
     Name = "${var.resource_prefix}-buildpack-eks-ig"
   }
 }
 
-resource "aws_nat_gateway" "buildpack" {
+resource "aws_nat_gateway" "nexprime" {
   allocation_id = aws_eip.nat.id
   subnet_id     = element(aws_subnet.public.*.id, 0)
-  depends_on    = [aws_internet_gateway.buildpack]
+  depends_on    = [aws_internet_gateway.nexprime]
 
   tags = {
     Name = "${var.resource_prefix}-buildpack-nat-gw"
@@ -66,10 +66,10 @@ resource "aws_nat_gateway" "buildpack" {
 
 
 resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.buildpack.id
+  vpc_id = aws_vpc.nexprime.id
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.buildpack.id
+    gateway_id = aws_internet_gateway.nexprime.id
   }
 
   tags = {
@@ -79,10 +79,10 @@ resource "aws_route_table" "public" {
 
 
 resource "aws_route_table" "private" {
-  vpc_id = aws_vpc.buildpack.id
+  vpc_id = aws_vpc.nexprime.id
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.buildpack.id
+    nat_gateway_id = aws_nat_gateway.nexprime.id
   }
 
   tags = {
@@ -107,7 +107,7 @@ resource "aws_route_table_association" "private" {
 
 resource "aws_eip" "nat" {
   vpc        = true
-  depends_on = [aws_internet_gateway.buildpack]
+  depends_on = [aws_internet_gateway.nexprime]
 
   tags = {
     Name = "${var.resource_prefix}-buildpack-NAT"
