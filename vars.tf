@@ -72,7 +72,7 @@ variable "postgres_port" {
 }
 
 variable "postgres_name" {
-  default     = "KeycloakDb"
+  default     = "BuildpackDb"
   type        = string
   description = "PostgreSQL name for servick application"
 }
@@ -84,9 +84,9 @@ variable "postgres_instance_class" {
 }
 
 variable "postgres_master_user_name" {
-  default     = "admin"
+  default     = "postgresqladmin"
   type        = string
-  description = "Maiadb master user name"
+  description = "PostgreSQL master user name"
 }
 
 
