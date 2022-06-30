@@ -7,7 +7,7 @@ output "public_ip" {
 
 ## VPC_ID
 output "vpc_id" {
-  value = aws_vpc.buildpack.id
+  value = aws_vpc.nexprime.id
 }
 
 ## Private_subnet_id

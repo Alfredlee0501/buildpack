@@ -11,7 +11,7 @@ metadata:
   namespace: kube-system
 data:
   mapRoles:
-    - rolearn: ${aws_iam_role.buildpack-node.arn}
+    - rolearn: ${aws_iam_role.nexprime-node.arn}
       username: system:node:{{EC2PrivateDNSName}}
       groups:
         - system:bootstrappers
@@ -25,20 +25,20 @@ CONFIGMAPAWSAUTH
 apiVersion: v1
 clusters:
 - cluster:
-    certificate-authority-data: ${aws_eks_cluster.buildpack.certificate_authority[0].data}
-    server: ${aws_eks_cluster.buildpack.endpoint}
-  name: nexprime 
+    certificate-authority-data: ${aws_eks_cluster.nexprime.certificate_authority[0].data}
+    server: ${aws_eks_cluster.nexprime.endpoint}
+  name: nexprimescm 
 
 => 2. context config.
 contexts:
 - context:
-    cluster: nexprime
-    user: nexprime
-  name: nexprme
+    cluster: nexprimescm
+    user: nexprimescm
+  name: nexprimescm
 
 => 3. users config.
 users:
-- name: nexprime
+- name: nexprimescm
   user:
     exec:
       apiVersion: client.authentication.k8s.io/v1alpha1
