@@ -14,7 +14,7 @@ resource "random_string" "password" {
 
 resource "aws_db_subnet_group" "nexprime" {
   name        = "${var.resource_prefix}-buildpack-rds-subnet-group"
-  description = "Terraform example RDS subnet group"
+  description = "BuildPack RDS subnet group"
   subnet_ids  = [var.subnet_id1, var.subnet_id2]
 
   tags = {
@@ -24,7 +24,7 @@ resource "aws_db_subnet_group" "nexprime" {
 
 
 resource "aws_db_instance" "nexprime" {
-  identifier             = "${var.resource_prefix}-keycloackdb"
+  identifier             = "${var.resource_prefix}-mobilescmdb"
   allocated_storage      = 10
   engine                 = "postgres"
   engine_version         = var.postgres_version
@@ -48,7 +48,7 @@ resource "aws_db_parameter_group" "nexprime" {
 
 resource "aws_security_group" "nexprime" {
   name        = "${var.resource_prefix}-buildpack_rds_sg"
-  description = "Terraform RDS PostgreSQL sg"
+  description = "Buildpack RDS PostgreSQL sg"
   vpc_id      = var.vpc_id
 
   ingress {

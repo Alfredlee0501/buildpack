@@ -84,7 +84,7 @@ variable "postgres_instance_class" {
 }
 
 variable "postgres_master_user_name" {
-  default     = "ipostgresqladmin"
+  default     = "postgresqladmin"
   type        = string
   description = "PostgreSQL master user name"
 }
