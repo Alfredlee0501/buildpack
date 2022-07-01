@@ -72,7 +72,7 @@ pipeline {
                         secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                         ]]) {
                               sh 'echo test'
-                              sh 'terraform destro -auto-approve'
+                              sh 'terraform destroy  -auto-approve'
                     }
                 }
             }
